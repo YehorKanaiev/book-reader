@@ -1,1 +1,146 @@
+
+@use '@angular/material' as mat;
+@include mat.core();
+
+@import "styles/color-variables";
+
+$primary-palette: mat.define-palette( (
+        50 : #f4eeef,
+        100 : #e5d5d8,
+        200 : #d3b9be,
+        300 : #c19ca4,
+        400 : #b48791,
+        500 : #a7727d,
+        600 : #9f6a75,
+        700 : #965f6a,
+        800 : #8c5560,
+        900 : #7c424d,
+        A100 : #ffd4dc,
+        A200 : #ffa1b2,
+        A400 : #ff6e89,
+        A700 : #ff5474,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #000000,
+                400 : #000000,
+                500 : #000000,
+                600 : #ffffff,
+                700 : #ffffff,
+                800 : #ffffff,
+                900 : #ffffff,
+                A100 : #000000,
+                A200 : #000000,
+                A400 : #000000,
+                A700 : #000000,
+        )
+));
+$accent-palette: mat.define-palette((
+        50 : #fdfbf8,
+        100 : #faf4ee,
+        200 : #f6ede3,
+        300 : #f2e6d8,
+        400 : #f0e0cf,
+        500 : #eddbc7,
+        600 : #ebd7c1,
+        700 : #e8d2ba,
+        800 : #e5cdb3,
+        900 : #e0c4a6,
+        A100 : #ffffff,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #000000,
+                400 : #000000,
+                500 : #000000,
+                600 : #000000,
+                700 : #000000,
+                800 : #000000,
+                900 : #000000,
+                A100 : #000000,
+                A200 : #000000,
+                A400 : #000000,
+                A700 : #000000,
+        )
+));
+$warn-palette: mat.define-palette((
+        50 : #f7e4e4,
+        100 : #eabbbb,
+        200 : #dd8d8d,
+        300 : #cf5f5f,
+        400 : #c43d3d,
+        500 : #ba1b1b,
+        600 : #b31818,
+        700 : #ab1414,
+        800 : #a31010,
+        900 : #940808,
+        A100 : #ffc1c1,
+        A200 : #ff8e8e,
+        A400 : #ff5b5b,
+        A700 : #ff4141,
+        contrast: (
+                50 : #151515,
+                100 : #151515,
+                200 : #151515,
+                300 : #151515,
+                400 : #ffffff,
+                500 : #ffffff,
+                600 : #ffffff,
+                700 : #ffffff,
+                800 : #ffffff,
+                900 : #ffffff,
+                A100 : #151515,
+                A200 : #151515,
+                A400 : #151515,
+                A700 : #ffffff,
+        )
+));
+
+$theme: mat.define-light-theme((
+        color: (
+                primary: $primary-palette,
+                accent: $accent-palette,
+                warn: $warn-palette,
+        )
+));
+
+$dark-theme: mat.define-dark-theme((
+        color: (
+                primary: $primary-palette,
+                accent: $accent-palette,
+                warn: $warn-palette,
+        )
+));
+
+$button-typography: mat.define-typography-level(
+        $font-weight: 600,
+        $font-size: 1rem,
+);
+
+$typography-config: mat.define-typography-config(
+        $font-family: "Open Sans",
+        $button: $button-typography,
+);
+
+@include mat.all-component-typographies($typography-config);
+
+
+@include mat.all-component-themes($theme);
+
+
+.theme-dark {
+  @include mat.all-component-colors($dark-theme);
+}
+
 /* You can add global styles to this file, and also import other style files */
+html, body { height: 100%; }
+body { margin: 0; font-family: "Open Sans", sans-serif; color: $typography }
+
+body.theme-dark {
+  color: $typography-light;
+}
