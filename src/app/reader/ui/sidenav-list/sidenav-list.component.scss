@@ -1,0 +1,23 @@
+@import "../../../../styles/color-variables";
+
+.list-container {
+  padding: 0 0.5rem;
+  
+  .item {
+    cursor: pointer;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $border-gray;
+    }
+
+    .default-item {
+      padding: 0.2rem 0.8rem;
+      width: 16rem;
+      display: inline-block;
+
+      &:hover {
+        background-color: $background-primary;
+      }
+    }
+  }
+}
