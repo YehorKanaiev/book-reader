@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'book',
+    redirectTo: 'book/epub',
   },
   {
     path: 'book',

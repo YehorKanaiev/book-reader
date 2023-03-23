@@ -5,10 +5,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from '@reader/app.component';
 import { ReaderModule } from '@reader/reader/reader.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedModule } from '@reader/shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, ReaderModule, BrowserAnimationsModule],
+  imports: [BrowserModule, AppRoutingModule, SharedModule, ReaderModule, BrowserAnimationsModule],
   providers: [],
   bootstrap: [AppComponent],
 })

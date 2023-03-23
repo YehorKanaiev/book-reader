@@ -1,0 +1,38 @@
+@import "../../../styles/color-variables";
+
+.container {
+  .sidenav {
+    .book-title {
+      padding: 0 0.5rem;
+    }
+  }
+  
+  .content {
+    position: relative;
+    height: 100Vh;
+
+    #sidenavToggle {
+      position: absolute;
+      transform: translate(16px, 8px);
+      background-color: $background-light-gray;
+    }
+
+    #sidenavToggle.opened::ng-deep {
+      transform: translate(-50%, 8px);
+
+      .mat-icon {
+        padding-left: 12px;
+      }
+    }
+    
+    .book-controls-container {
+      background-color: $primary;
+    }
+
+    .book-container {
+      height: calc(100% - 60px);
+      display: flex;
+      align-items: center;
+    }
+  }
+}

@@ -1,3 +1,36 @@
-<span (click)="previousPage()">Prev</span>
-<div [id]="bookPlaceID"></div>
-<span (click)="nextPage()">Next</span>
+<mat-drawer-container class="container" autosize>
+  <mat-drawer #drawer class="sidenav" mode="side">
+    <h3 class="book-title">{{ title }}</h3>
+    <rd-sidenav-list class="chapters" [items]="chapters"></rd-sidenav-list>
+  </mat-drawer>
+  
+  <div class="content">
+    <button id="sidenavToggle" mat-mini-fab aria-label="Toggle navigation menu" [class.opened]="drawer.opened" (click)="drawer.toggle()">
+      <mat-icon *ngIf="drawer.opened">chevron_left</mat-icon>
+      <mat-icon *ngIf="!drawer.opened">chevron_right</mat-icon>
+    </button>
+    
+    <header class="book-controls-container">
+      <rd-book-controls
+              (increaseFontSize)="increaseFontSize()"
+              (decreaseFontSize)="decreaseFontSize()">
+      </rd-book-controls>
+    </header>
+    
+    <div class="book-container" rdResizeObservable (dimensions)="resizeBook($event)">
+      <div class="page-button-container" style="flex: 0 0 {{ pageButtonWidth }}px; text-align: center">
+        <button mat-fab aria-label="Previous page" (click)="previousPage()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+      </div>
+      
+      <div [id]="bookPlaceElementID"></div>
+
+      <div class="page-button-container" style="flex: 0 0 {{ pageButtonWidth }}px; text-align: center">
+        <button  mat-fab aria-label="Next page" (click)="nextPage()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-drawer-container>
