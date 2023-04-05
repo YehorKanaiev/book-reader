@@ -5,12 +5,12 @@ import { BookMetadata } from '@reader/reader/interfaces/book-metadata.interface'
 import { Dimensions } from '@reader/shared/resize-observable.directive';
 
 @Component({
-  selector: 'rd-reader-wrapper',
-  templateUrl: './reader-wrapper.component.html',
-  styleUrls: ['./reader-wrapper.component.scss'],
+  selector: 'rd-reader',
+  templateUrl: './reader.component.html',
+  styleUrls: ['./reader.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReaderWrapperComponent implements OnInit {
+export class ReaderComponent implements OnInit {
   chapters: ListItem[] = [
     //TODO provide chapters
     { id: 0, name: 'Intro' },
