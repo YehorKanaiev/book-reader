@@ -10,7 +10,8 @@
     "build": "ng build",
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "husky-prepare": "husky install"
   },
   "private": true,
   "dependencies": {
