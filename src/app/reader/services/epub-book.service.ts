@@ -1,52 +1,43 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Book } from '@reader/reader/services/book';
 import Epub, { Book as ParserBook } from 'epubjs';
 import Rendition from 'epubjs/types/rendition';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { BookMetadata } from '@reader/reader/interfaces/book-metadata.interface';
-import { PackagingMetadataObject } from 'epubjs/types/packaging';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { selectFontSize } from '@state/book/book.selectors';
+import { AppState } from '@state/app.state';
+import { setMetadata } from '@state/book/book.actions';
 
 @Injectable()
-export class EpubBookService extends Book {
-  get metadata(): Promise<BookMetadata | null> {
-    if (!this._metadata) {
-      return Promise.resolve(null);
-    }
-
-    return this._metadata.then(metadata => {
-      return {
-        title: metadata?.title ?? '',
-        author: metadata.creator ?? '',
-        description: metadata.description ?? '',
-        language: metadata.language ?? '',
-      };
-    });
-  }
-  private _metadata?: Promise<PackagingMetadataObject>;
-
+export class EpubBookService extends Book implements OnDestroy {
   get isRendered(): Observable<boolean> {
     return this._isRendered.asObservable();
   }
-  private readonly _isRendered = new BehaviorSubject<boolean>(false);
-
-  get fontSize(): number {
-    return this._fontSize;
-  }
-  private _fontSize = 16; //TODO remove (moved to state)
 
   private book?: ParserBook;
   private rendition?: Rendition;
   private bookPlaceID?: string;
+  private readonly _isRendered = new BehaviorSubject<boolean>(false);
+  private readonly fontSize$: Observable<number>;
+  private readonly destroy$ = new Subject<void>();
 
-  constructor() {
+  constructor(private readonly store: Store<AppState>) {
     super();
+    this.fontSize$ = this.store.select(selectFontSize);
+    this.initFontSizeObserver();
   }
 
-  render(sourceURL: string, elementID: string): Promise<void> {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  render(sourceURL: string, elementID: string, width: number, height: number): Promise<void> {
     this.book = Epub(sourceURL);
     this.bookPlaceID = elementID;
-    this._metadata = this.book.loaded.metadata;
-    this.rendition = this.book.renderTo(this.bookPlaceID, { width: '100%', height: '100%' });
+    this.initMetadata();
+    this.rendition = this.book.renderTo(this.bookPlaceID, { width: `${width}px`, height: `${height}px` });
+
     return this.rendition.display().then(() => {
       this._isRendered.next(true);
     });
@@ -64,11 +55,29 @@ export class EpubBookService extends Book {
     return this.rendition?.prev() ?? Promise.resolve(undefined);
   }
 
-  setFontSize(size: number): Promise<void> {
+  private initFontSizeObserver(): void {
+    this.fontSize$.pipe(takeUntil(this.destroy$)).subscribe(size => this.setFontSize(size));
+  }
+
+  private initMetadata(): void {
+    if (!this.book) {
+      return;
+    }
+
+    this.book.loaded.metadata.then(allMetadata => {
+      const metadata = {
+        title: allMetadata?.title ?? '',
+        author: allMetadata.creator ?? '',
+        description: allMetadata.description ?? '',
+        language: allMetadata.language ?? '',
+      };
+
+      this.store.dispatch(setMetadata({ metadata }));
+    });
+  }
+
+  private setFontSize(size: number): void {
     const sizeCss = `${size}px`;
     this.rendition?.themes?.fontSize(sizeCss);
-    this._fontSize = size;
-
-    return Promise.resolve(undefined);
   }
 }

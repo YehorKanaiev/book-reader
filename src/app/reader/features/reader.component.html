@@ -1,6 +1,9 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer #drawer class="sidenav" mode="side">
-    <h3 class="book-title">{{ title }}</h3>
+    <ng-container *ngIf="bookMetadata$ | async as metadata">
+      <h3 class="book-title">{{ metadata.title }}</h3>
+    </ng-container>
+    
     <rd-sidenav-list class="chapters" [items]="chapters"></rd-sidenav-list>
   </mat-drawer>
   
@@ -17,7 +20,7 @@
       </rd-book-controls>
     </header>
     
-    <div class="book-container" rdResizeObservable (dimensions)="resizeBook($event)">
+    <div #bookContainer class="book-container" rdResizeObservable (dimensions)="resizeBook($event)">
       <div class="page-button-container" style="flex: 0 0 {{ pageButtonWidth }}px; text-align: center">
         <button mat-fab aria-label="Previous page" (click)="previousPage()">
           <mat-icon>chevron_left</mat-icon>
