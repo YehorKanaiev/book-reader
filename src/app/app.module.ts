@@ -7,10 +7,18 @@ import { ReaderModule } from '@reader/reader/reader.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '@reader/shared/shared.module';
 import { StoreModule } from '@ngrx/store';
+import { bookReducer } from '@reader/state/book/book.reducer';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, SharedModule, ReaderModule, BrowserAnimationsModule, StoreModule.forRoot({}, {})],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    SharedModule,
+    ReaderModule,
+    BrowserAnimationsModule,
+    StoreModule.forRoot({ book: bookReducer }, {}),
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

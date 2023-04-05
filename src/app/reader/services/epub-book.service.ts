@@ -32,7 +32,7 @@ export class EpubBookService extends Book {
   get fontSize(): number {
     return this._fontSize;
   }
-  private _fontSize = 16;
+  private _fontSize = 16; //TODO remove (moved to state)
 
   private book?: ParserBook;
   private rendition?: Rendition;

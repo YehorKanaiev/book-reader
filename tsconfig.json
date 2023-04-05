@@ -25,7 +25,8 @@
     ],
     "paths": {
       "@assets/*": ["src/assets/*"],
-      "@reader/*": ["src/app/*"]
+      "@state/*": ["src/app/state/*"],
+      "@reader/*": ["src/app/*"],
     }
   },
   "angularCompilerOptions": {
