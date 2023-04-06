@@ -3,8 +3,9 @@
     <ng-container *ngIf="bookMetadata$ | async as metadata">
       <h3 class="book-title">{{ metadata.title }}</h3>
     </ng-container>
-    
-    <rd-sidenav-list class="chapters" [items]="chapters"></rd-sidenav-list>
+    <ng-container *ngIf="chapters$ | async as chapters">
+      <rd-sidenav-list  class="chapters" [items]="chapters" (itemClicked)="goToChapter($event)"></rd-sidenav-list>
+    </ng-container>
   </mat-drawer>
   
   <div class="content">

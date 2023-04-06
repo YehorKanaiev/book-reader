@@ -1,5 +1,5 @@
 <ul class="list-container">
-  <li class="item" *ngFor="let item of items" (click)="onItemClick()">
+  <li class="item" *ngFor="let item of items" (click)="onItemClick(item)">
     <ng-container
             [ngTemplateOutlet]="itemTemplate || defaultItem" 
             [ngTemplateOutletContext]="{ $implicit: item }"
@@ -7,7 +7,7 @@
     </ng-container>
     <ng-template #defaultItem>
       <span class="default-item">
-        {{ item.name }}
+        {{ item.label }}
       </span>
     </ng-template>
   </li>

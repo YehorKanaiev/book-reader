@@ -1,13 +1,14 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { Book } from '../services/book';
-import { ListItem } from '@reader/reader/interfaces/list-item.interface';
 import { BookMetadata } from '@reader/reader/interfaces/book-metadata.interface';
 import { Dimensions } from '@reader/shared/resize-observable.directive';
 import { Store } from '@ngrx/store';
 import { AppState } from '@state/app.state';
-import { decreaseFontSize, increaseFontSize } from '@state/book/book.actions';
-import { selectMetadata } from '@state/book/book.selectors';
+import { decreaseFontSize, increaseFontSize, setCurrentChapter } from '@state/book/book.actions';
+import { selectChapters, selectMetadata } from '@state/book/book.selectors';
 import { Observable } from 'rxjs';
+import { Chapter } from '../interfaces/chapter.interface';
+import { ListItem } from '../interfaces/list-item.interface';
 
 @Component({
   selector: 'rd-reader',
@@ -16,13 +17,8 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReaderComponent implements AfterViewInit {
-  chapters: ListItem[] = [
-    //TODO provide chapters
-    { id: 0, name: 'Intro' },
-    { id: 1, name: 'Second step' },
-    { id: 2, name: 'Third step' },
-  ];
   bookMetadata$: Observable<BookMetadata | null>;
+  chapters$: Observable<Chapter[] | null>;
 
   @ViewChild('bookContainer') bookContainer?: ElementRef;
 
@@ -32,6 +28,7 @@ export class ReaderComponent implements AfterViewInit {
 
   constructor(private readonly book: Book, private readonly store: Store<AppState>) {
     this.bookMetadata$ = this.store.select(selectMetadata);
+    this.chapters$ = this.store.select(selectChapters);
   }
 
   ngAfterViewInit(): void {
@@ -57,6 +54,12 @@ export class ReaderComponent implements AfterViewInit {
   resizeBook({ width, height }: Dimensions): void {
     const bookWidth = width - 2 * this.pageButtonWidth;
     this.book.resize(bookWidth, height);
+  }
+
+  goToChapter(item: ListItem): void {
+    if ('href' in item && typeof item.href === 'string') {
+      this.store.dispatch(setCurrentChapter({ chapter: item as Chapter }));
+    }
   }
 
   private renderBook(): void {

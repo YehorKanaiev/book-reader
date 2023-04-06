@@ -15,9 +15,9 @@ export class SidenavListComponent {
   itemTemplate?: TemplateRef<ListItem>;
 
   @Output()
-  itemClicked = new EventEmitter<void>();
+  itemClicked = new EventEmitter<ListItem>();
 
-  onItemClick(): void {
-    this.itemClicked.emit();
+  onItemClick(item: ListItem): void {
+    this.itemClicked.emit(item);
   }
 }
