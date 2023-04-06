@@ -9,9 +9,11 @@
 
   .font-controls {
     .font-size-button {
+      font-size: 1.25rem;
       padding: 0 12px;
       color: $typography-light;
       cursor: pointer;
+      user-select: none;
     }
   }
 }
