@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { Chapter } from '@reader/reader/interfaces/chapter.interface';
 
 export abstract class Book {
   /**
@@ -31,4 +32,10 @@ export abstract class Book {
    * Go to the next page
    */
   abstract next(): Promise<void>;
+
+  /**
+   * Open chapter of a book
+   * @param chapter
+   */
+  abstract openChapter(chapter: Chapter): Promise<void>;
 }

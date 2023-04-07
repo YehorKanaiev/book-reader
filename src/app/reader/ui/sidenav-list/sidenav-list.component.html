@@ -1,14 +1,21 @@
 <ul class="list-container">
-  <li class="item" *ngFor="let item of items" (click)="onItemClick(item)">
+  <li class="item" *ngFor="let item of items; trackBy:identifyItem" (click)="onItemClick(item)">
     <ng-container
             [ngTemplateOutlet]="itemTemplate || defaultItem" 
             [ngTemplateOutletContext]="{ $implicit: item }"
     >
     </ng-container>
     <ng-template #defaultItem>
-      <span class="default-item">
+      <div class="default-item">
         {{ item.label }}
-      </span>
+        <img src="assets/icons/bookmark.svg" alt="bookmark" class="bookmark" *ngIf="isMarked(item)">
+      </div>
+      <div class="sub-items" *ngIf="isExpanded(item)">
+        <div class="default-item sub-item" *ngFor="let subItem of item.subitems" (click)="onItemClick(subItem, $event)">
+          {{ subItem.label }}
+          <img src="assets/icons/bookmark.svg" alt="bookmark" class="bookmark" *ngIf="isMarked(subItem)">
+        </div>
+      </div>
     </ng-template>
   </li>
 </ul>

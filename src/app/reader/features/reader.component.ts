@@ -4,11 +4,10 @@ import { BookMetadata } from '@reader/reader/interfaces/book-metadata.interface'
 import { Dimensions } from '@reader/shared/resize-observable.directive';
 import { Store } from '@ngrx/store';
 import { AppState } from '@state/app.state';
-import { decreaseFontSize, increaseFontSize, setCurrentChapter } from '@state/book/book.actions';
-import { selectChapters, selectMetadata } from '@state/book/book.selectors';
+import { decreaseFontSize, increaseFontSize } from '@state/book/book.actions';
+import { selectChapter, selectChapters, selectMetadata } from '@state/book/book.selectors';
 import { Observable } from 'rxjs';
 import { Chapter } from '../interfaces/chapter.interface';
-import { ListItem } from '../interfaces/list-item.interface';
 
 @Component({
   selector: 'rd-reader',
@@ -18,6 +17,7 @@ import { ListItem } from '../interfaces/list-item.interface';
 })
 export class ReaderComponent implements AfterViewInit {
   bookMetadata$: Observable<BookMetadata | null>;
+  chapter$: Observable<Chapter | null>;
   chapters$: Observable<Chapter[] | null>;
 
   @ViewChild('bookContainer') bookContainer?: ElementRef;
@@ -28,6 +28,7 @@ export class ReaderComponent implements AfterViewInit {
 
   constructor(private readonly book: Book, private readonly store: Store<AppState>) {
     this.bookMetadata$ = this.store.select(selectMetadata);
+    this.chapter$ = this.store.select(selectChapter);
     this.chapters$ = this.store.select(selectChapters);
   }
 
@@ -56,10 +57,8 @@ export class ReaderComponent implements AfterViewInit {
     this.book.resize(bookWidth, height);
   }
 
-  goToChapter(item: ListItem): void {
-    if ('href' in item && typeof item.href === 'string') {
-      this.store.dispatch(setCurrentChapter({ chapter: item as Chapter }));
-    }
+  goToChapter(chapter: Chapter): void {
+    this.book.openChapter(chapter);
   }
 
   private renderBook(): void {

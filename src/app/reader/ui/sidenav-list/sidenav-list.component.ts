@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
-import { ListItem } from '@reader/reader/interfaces/list-item.interface';
+import { Chapter } from '@reader/reader/interfaces/chapter.interface';
 
 @Component({
   selector: 'rd-sidenav-list',
@@ -9,15 +9,35 @@ import { ListItem } from '@reader/reader/interfaces/list-item.interface';
 })
 export class SidenavListComponent {
   @Input()
-  items: ListItem[] = [];
+  items: Chapter[] = [];
 
   @Input()
-  itemTemplate?: TemplateRef<ListItem>;
+  itemTemplate?: TemplateRef<Chapter>;
+
+  @Input()
+  marked?: Chapter | null;
 
   @Output()
-  itemClicked = new EventEmitter<ListItem>();
+  itemClicked = new EventEmitter<Chapter>();
 
-  onItemClick(item: ListItem): void {
+  onItemClick(item: Chapter, e?: MouseEvent): void {
+    e?.stopPropagation();
     this.itemClicked.emit(item);
+  }
+
+  isMarked(item: Chapter): boolean {
+    return !!this.marked && this.marked.id === item.id;
+  }
+
+  identifyItem(index: number, item: Chapter): string {
+    return item.id;
+  }
+
+  hasSubItems(item: Chapter): boolean {
+    return item.subitems && !!item.subitems.length;
+  }
+
+  isExpanded(item: Chapter): boolean {
+    return this.isMarked(item) || (this.hasSubItems(item) && !!item.subitems.find(sub => this.isMarked(sub)));
   }
 }

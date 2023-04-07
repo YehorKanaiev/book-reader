@@ -4,12 +4,23 @@
       <h3 class="book-title">{{ metadata.title }}</h3>
     </ng-container>
     <ng-container *ngIf="chapters$ | async as chapters">
-      <rd-sidenav-list  class="chapters" [items]="chapters" (itemClicked)="goToChapter($event)"></rd-sidenav-list>
+      <rd-sidenav-list  
+              class="chapters" 
+              [items]="chapters" 
+              [marked]="chapter$ | async" 
+              (itemClicked)="goToChapter($event)">
+      </rd-sidenav-list>
     </ng-container>
   </mat-drawer>
   
   <div class="content">
-    <button id="sidenavToggle" mat-mini-fab aria-label="Toggle navigation menu" [class.opened]="drawer.opened" (click)="drawer.toggle()">
+    <button
+            mat-mini-fab
+            id="sidenavToggle"  
+            aria-label="Toggle navigation menu" 
+            title="Expand navigation panel" 
+            [class.opened]="drawer.opened" 
+            (click)="drawer.toggle()">
       <mat-icon *ngIf="drawer.opened">chevron_left</mat-icon>
       <mat-icon *ngIf="!drawer.opened">chevron_right</mat-icon>
     </button>
@@ -23,7 +34,7 @@
     
     <div #bookContainer class="book-container" rdResizeObservable (dimensions)="resizeBook($event)">
       <div class="page-button-container" style="flex: 0 0 {{ pageButtonWidth }}px; text-align: center">
-        <button mat-fab aria-label="Previous page" (click)="previousPage()">
+        <button mat-fab aria-label="Previous page" title="Previous page" (click)="previousPage()">
           <mat-icon>chevron_left</mat-icon>
         </button>
       </div>
@@ -31,7 +42,7 @@
       <div [id]="bookPlaceElementID"></div>
 
       <div class="page-button-container" style="flex: 0 0 {{ pageButtonWidth }}px; text-align: center">
-        <button  mat-fab aria-label="Next page" (click)="nextPage()">
+        <button  mat-fab aria-label="Next page" title="Next page" (click)="nextPage()">
           <mat-icon>chevron_right</mat-icon>
         </button>
       </div>
