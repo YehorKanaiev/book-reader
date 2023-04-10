@@ -3,18 +3,21 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReaderComponent } from '@reader/reader/features/reader.component';
 import { Book } from '@reader/reader/services/book';
 import { EpubBookService } from '@reader/reader/services/epub-book.service';
+import { HomeComponent } from '@reader/home/home.component';
+import { AppRoutingPaths } from '@reader/app-routing-paths.enum';
+import { ReaderRoutingPaths } from '@reader/reader/reader-routing-paths.enum';
 
 const routes: Routes = [
   {
-    path: '',
+    path: AppRoutingPaths.Home,
     pathMatch: 'full',
-    redirectTo: 'book/epub',
+    component: HomeComponent,
   },
   {
-    path: 'book',
+    path: AppRoutingPaths.Reader,
     children: [
       {
-        path: 'epub',
+        path: ReaderRoutingPaths.Epub,
         component: ReaderComponent,
         providers: [
           {

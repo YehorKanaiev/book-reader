@@ -34,7 +34,7 @@ export class EpubBookService extends Book implements OnDestroy {
     this.destroy$.complete();
   }
 
-  render(sourceURL: string, elementID: string, width: number, height: number): Promise<void> {
+  render(sourceURL: string | ArrayBuffer, elementID: string, width: number, height: number): Promise<void> {
     this.book = Epub(sourceURL);
     this.bookPlaceID = elementID;
     this.initMetadata();

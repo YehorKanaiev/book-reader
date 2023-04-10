@@ -1,0 +1,19 @@
+<div class="home-container">
+  <header class="header">
+    
+  </header>
+
+  <div class="samples">
+    <div class="sample" *ngFor="let sample of samples" (click)="openSample(sample)">{{ sample }}</div>
+  </div>
+  
+  <input type="file" class="file-input"
+         [accept]="requiredFileType"
+         (change)="onFileSelected()" #fileUpload>
+
+  <div class="file-upload">
+    <button mat-mini-fab color="primary" class="upload-btn" (click)="fileUpload.click()">
+      <mat-icon>attach_file</mat-icon>
+    </button>
+  </div>
+</div>

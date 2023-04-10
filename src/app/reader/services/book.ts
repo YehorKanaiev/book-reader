@@ -14,7 +14,7 @@ export abstract class Book {
    * @param width is width of container element to be filled
    * @param height is height of container element to be filled
    */
-  abstract render(sourceURL: string, elementID: string, width: number, height: number): Promise<void>;
+  abstract render(sourceURL: string | ArrayBuffer, elementID: string, width: number, height: number): Promise<void>;
 
   /**
    * Changes the size of book's container
