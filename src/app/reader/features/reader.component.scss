@@ -2,9 +2,13 @@
 
 .container {
   .sidenav {
-    .book-title {
+    .book-title, .book-author {
       padding: 0 1.25rem;
       width: 16rem;
+    }
+    
+    .book-author {
+      margin-top: 0;
     }
   }
   

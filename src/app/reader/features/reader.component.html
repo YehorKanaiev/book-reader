@@ -2,6 +2,7 @@
   <mat-drawer #drawer class="sidenav" mode="side">
     <ng-container *ngIf="bookMetadata$ | async as metadata">
       <h3 class="book-title">{{ metadata.title }}</h3>
+      <h5 class="book-author">{{ metadata.author }}</h5>
     </ng-container>
     <ng-container *ngIf="chapters$ | async as chapters">
       <rd-sidenav-list  
