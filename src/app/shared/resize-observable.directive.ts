@@ -1,5 +1,5 @@
 import { Directive, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { debounceTime, Subject, takeUntil, tap } from 'rxjs';
+import { debounceTime, skip, Subject, takeUntil, tap } from 'rxjs';
 
 @Directive({
   selector: '[rdResizeObservable]',
@@ -30,6 +30,7 @@ export class ResizeObservableDirective implements OnDestroy {
     this.resize$
       .asObservable()
       .pipe(
+        skip(1),
         debounceTime(this.debounceTime),
         tap(event => this.emitDimensionsChanges(event)),
         takeUntil(this.destroy$)
