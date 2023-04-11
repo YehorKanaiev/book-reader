@@ -1,19 +1,21 @@
 <div class="home-container">
-  <header class="header">
-    
-  </header>
+  <div class="file-upload-area" rdDnd (filesDropped)="onFilesDropped($event)">
+    <img src="assets/icons/upload.svg" alt="upload icon" class="upload-icon" (click)="fileUpload.click()">
 
-  <div class="samples">
-    <div class="sample" *ngFor="let sample of samples" (click)="openSample(sample)">{{ sample }}</div>
+    <p><span class="choose-file-btn" (click)="fileUpload.click()">Choose a file</span> or drop it here</p>
+    <p>Allowed formats: {{ allowedTypesNames }}</p>
+
+    <input type="file" class="file-input"
+           [accept]="allowedTypesString"
+           (change)="onFileSelected()" #fileUpload>
   </div>
   
-  <input type="file" class="file-input"
-         [accept]="requiredFileType"
-         (change)="onFileSelected()" #fileUpload>
-
-  <div class="file-upload">
-    <button mat-mini-fab color="primary" class="upload-btn" (click)="fileUpload.click()">
-      <mat-icon>attach_file</mat-icon>
-    </button>
+  <div class="samples">
+    <div class="sample" *ngFor="let sample of samples">
+      <div class="cover-container" (click)="openSample(sample.source)">
+        <img src="assets/icons/book.svg" alt="book cover" class="cover">
+      </div>
+      <h5 class="sample-name" (click)="openSample(sample.source)">{{ sample.name }}</h5>
+    </div>
   </div>
 </div>

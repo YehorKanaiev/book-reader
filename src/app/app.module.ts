@@ -9,6 +9,7 @@ import { SharedModule } from '@reader/shared/shared.module';
 import { StoreModule } from '@ngrx/store';
 import { bookReducer } from '@reader/state/book/book.reducer';
 import { HomeModule } from '@reader/home/home.module';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,7 @@ import { HomeModule } from '@reader/home/home.module';
     BrowserAnimationsModule,
     StoreModule.forRoot({ book: bookReducer }, {}),
     HomeModule,
+    MatSnackBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
