@@ -9,6 +9,7 @@ import { selectChapter, selectChapters, selectMetadata } from '@state/book/book.
 import { debounceTime, Observable, ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
 import { Chapter } from '../interfaces/chapter.interface';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppRoutingPaths } from '@reader/app-routing-paths.enum';
 
 @Component({
   selector: 'rd-reader',
@@ -98,6 +99,10 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
 
   goToChapter(chapter: Chapter): void {
     this.book.openChapter(chapter);
+  }
+
+  goToHome(): void {
+    this.router.navigate([AppRoutingPaths.Home]);
   }
 
   private renderBook(source: string | ArrayBuffer): void {

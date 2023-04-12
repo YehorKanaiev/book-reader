@@ -2,6 +2,15 @@
 
 .container {
   .sidenav {
+    padding-top: 1rem;
+    
+    .back-button {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-left: 1.25rem;
+      cursor: pointer;
+    }
+    
     .book-title, .book-author {
       padding: 0 1.25rem;
       width: 16rem;
