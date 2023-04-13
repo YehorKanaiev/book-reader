@@ -2,37 +2,26 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Book } from '@reader/reader/services/book';
 import Epub, { Book as ParserBook } from 'epubjs';
 import Rendition from 'epubjs/types/rendition';
-import { BehaviorSubject, Observable, Subject, takeUntil, tap } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { selectFontSize } from '@state/book/book.selectors';
-import { AppState } from '@state/app.state';
-import { setChapters, setCurrentChapter, setMetadata } from '@state/book/book.actions';
+import { Subject } from 'rxjs';
 import { Chapter } from '../interfaces/chapter.interface';
 import { EpubJSHelperService } from '@reader/reader/services/epub-jshelper.service';
 import { Theme } from '@reader/core/themes.enum';
-import { selectTheme } from '@state/theme/theme.selectors';
+import { BookConfig } from '@reader/reader/interfaces/book-config.interface';
+import { BookMetadata } from '@reader/reader/interfaces/book-metadata.interface';
 
 @Injectable()
 export class EpubBookService extends Book implements OnDestroy {
-  get isRendered(): Observable<boolean> {
-    return this._isRendered.asObservable();
-  }
-
   private book?: ParserBook;
   private rendition?: Rendition;
   private bookPlaceID?: string;
   private theme = Theme.Light;
-  private readonly _isRendered = new BehaviorSubject<boolean>(false);
-  private readonly fontSize$: Observable<number>;
-  private readonly theme$: Observable<Theme>;
+  private onChaptersInit?: (chapters: Chapter[]) => void;
+  private onChapterOpened?: (chapter: Chapter) => void;
+  private onMetadataInit?: (metadata: BookMetadata) => void;
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private readonly store: Store<AppState>, private readonly helper: EpubJSHelperService) {
+  constructor(private readonly helper: EpubJSHelperService) {
     super();
-    this.fontSize$ = this.store.select(selectFontSize);
-    this.initFontSizeObserver();
-    this.theme$ = this.store.select(selectTheme);
-    this.initThemeObserver();
   }
 
   ngOnDestroy(): void {
@@ -40,19 +29,19 @@ export class EpubBookService extends Book implements OnDestroy {
     this.destroy$.complete();
   }
 
-  render(sourceURL: string | ArrayBuffer, elementID: string, width: number, height: number): Promise<void> {
-    this.book = Epub(sourceURL);
-    this.bookPlaceID = elementID;
+  render(config: BookConfig): Promise<void> {
+    this.book = Epub(config.sourceURL);
+    this.bookPlaceID = config.elementID;
+    this.onChaptersInit = config.onChaptersInit;
+    this.onChapterOpened = config.onChapterOpened;
+    this.onMetadataInit = config.onMetadataInit;
+    this.rendition = this.book.renderTo(this.bookPlaceID, { width: `${config.width}px`, height: `${config.height}px` });
     this.initMetadata();
     this.initChapters();
-    this.rendition = this.book.renderTo(this.bookPlaceID, { width: `${width}px`, height: `${height}px` });
     this.initChapterObserver();
     this.registerThemes();
-    this.rendition.themes.select(this.theme);
 
-    return this.rendition.display().then(() => {
-      this._isRendered.next(true);
-    });
+    return this.rendition.display();
   }
 
   resize(width: number, height: number): void {
@@ -75,8 +64,19 @@ export class EpubBookService extends Book implements OnDestroy {
     return this.rendition?.display(chapter.href);
   }
 
-  private initFontSizeObserver(): void {
-    this.fontSize$.pipe(takeUntil(this.destroy$)).subscribe(size => this.setFontSize(size));
+  setTheme(theme: Theme): void {
+    if (!this.rendition) {
+      return;
+    }
+
+    this.rendition.themes.select(theme);
+    this.theme = theme;
+    this.rendition.start();
+  }
+
+  setFontSize(size: number): void {
+    const sizeCss = `${size}px`;
+    this.rendition?.themes?.fontSize(sizeCss);
   }
 
   private registerThemes(): void {
@@ -89,23 +89,6 @@ export class EpubBookService extends Book implements OnDestroy {
     });
 
     this.rendition.themes.register(Theme.Light, {});
-  }
-
-  private initThemeObserver(): void {
-    this.theme$
-      .pipe(
-        tap(theme => {
-          if (!this.rendition || !this.book) {
-            return;
-          }
-
-          this.rendition.themes.select(theme);
-          this.rendition.start();
-        }),
-        tap(theme => (this.theme = theme)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
   }
 
   private initChapterObserver(): void {
@@ -121,7 +104,9 @@ export class EpubBookService extends Book implements OnDestroy {
       const location = this.rendition.currentLocation();
       const chapter = this.helper.getChapter(this.book, location);
 
-      this.store.dispatch(setCurrentChapter({ chapter: chapter as Chapter }));
+      if (this.onChapterOpened) {
+        this.onChapterOpened(chapter as Chapter);
+      }
     });
   }
 
@@ -138,7 +123,9 @@ export class EpubBookService extends Book implements OnDestroy {
         language: allMetadata.language ?? '',
       };
 
-      this.store.dispatch(setMetadata({ metadata }));
+      if (this.onMetadataInit) {
+        this.onMetadataInit(metadata);
+      }
     });
   }
 
@@ -150,12 +137,9 @@ export class EpubBookService extends Book implements OnDestroy {
     this.book.loaded.navigation.then(navigation => {
       const chapters = [...navigation.toc];
 
-      this.store.dispatch(setChapters({ chapters: chapters as Chapter[] }));
+      if (this.onChaptersInit) {
+        this.onChaptersInit(chapters as Chapter[]);
+      }
     });
-  }
-
-  private setFontSize(size: number): void {
-    const sizeCss = `${size}px`;
-    this.rendition?.themes?.fontSize(sizeCss);
   }
 }

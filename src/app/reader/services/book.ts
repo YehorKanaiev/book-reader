@@ -1,20 +1,13 @@
-import { Observable } from 'rxjs';
 import { Chapter } from '@reader/reader/interfaces/chapter.interface';
+import { Theme } from '@reader/core/themes.enum';
+import { BookConfig } from '@reader/reader/interfaces/book-config.interface';
 
 export abstract class Book {
   /**
-   * Emits true when a book is loaded, otherwise emits false
-   */
-  abstract get isRendered(): Observable<boolean>;
-
-  /**
    * Creates a book and adds it to an element in DOM
-   * @param sourceURL is a source where a book is stored
-   * @param elementID is id of an element in DOM, where a book should be rendered
-   * @param width is width of container element to be filled
-   * @param height is height of container element to be filled
+   * @param config
    */
-  abstract render(sourceURL: string | ArrayBuffer, elementID: string, width: number, height: number): Promise<void>;
+  abstract render(config: BookConfig): Promise<void>;
 
   /**
    * Changes the size of book's container
@@ -38,4 +31,16 @@ export abstract class Book {
    * @param chapter
    */
   abstract openChapter(chapter: Chapter): Promise<void>;
+
+  /**
+   * Set theme, so that book can adapt inner elements to application styles
+   * @param theme
+   */
+  abstract setTheme(theme: Theme): void;
+
+  /**
+   * Set font size for text in a book
+   * @param size font size in px
+   */
+  abstract setFontSize(size: number): void;
 }
