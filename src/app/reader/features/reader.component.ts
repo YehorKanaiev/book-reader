@@ -10,6 +10,9 @@ import { debounceTime, Observable, ReplaySubject, Subject, takeUntil, tap } from
 import { Chapter } from '../interfaces/chapter.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppRoutingPaths } from '@reader/app-routing-paths.enum';
+import { Theme } from '@reader/core/themes.enum';
+import { setTheme } from '@state/theme/theme.actions';
+import { selectTheme } from '@state/theme/theme.selectors';
 
 @Component({
   selector: 'rd-reader',
@@ -21,6 +24,7 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
   bookMetadata$: Observable<BookMetadata | null>;
   chapter$: Observable<Chapter | null>;
   chapters$: Observable<Chapter[] | null>;
+  theme$: Observable<Theme>;
 
   @ViewChild('bookContainer') bookContainer?: ElementRef;
 
@@ -38,6 +42,7 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
     this.bookMetadata$ = this.store.select(selectMetadata);
     this.chapter$ = this.store.select(selectChapter);
     this.chapters$ = this.store.select(selectChapters);
+    this.theme$ = this.store.select(selectTheme);
 
     //TODO create methods to handle state and queryParams
     const navigation = this.router.getCurrentNavigation();
@@ -103,6 +108,10 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
 
   goToHome(): void {
     this.router.navigate([AppRoutingPaths.Home]);
+  }
+
+  changeTheme(theme: Theme): void {
+    this.store.dispatch(setTheme({ theme }));
   }
 
   private renderBook(source: string | ArrayBuffer): void {

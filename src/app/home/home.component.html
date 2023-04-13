@@ -1,7 +1,7 @@
 <div class="home-container">
   <div class="file-upload-area" rdDnd (filesDropped)="onFilesDropped($event)">
-    <img src="assets/icons/upload.svg" alt="upload icon" class="upload-icon" (click)="fileUpload.click()">
-
+    <div class="upload-icon" title="Upload file" (click)="fileUpload.click()"></div>
+    
     <p><span class="choose-file-btn" (click)="fileUpload.click()">Choose a file</span> or drop it here</p>
     <p>Allowed formats: {{ allowedTypesNames }}</p>
 

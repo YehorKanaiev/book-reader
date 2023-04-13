@@ -9,6 +9,11 @@
       height: 1.5rem;
       margin-left: 1.25rem;
       cursor: pointer;
+      background-color: black;
+      -webkit-mask: url(../../../assets/icons/back.svg) no-repeat center;
+      mask: url(../../../assets/icons/back.svg) no-repeat center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
     }
     
     .book-title, .book-author {
@@ -49,4 +54,8 @@
       align-items: center;
     }
   }
+}
+
+.theme-dark :host .back-button {
+  background-color: white !important;
 }

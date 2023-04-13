@@ -3,4 +3,10 @@
     <span class="font-size-button" title="Increase font size" (click)="increaseFontSize.emit()">A <sup>+</sup></span>
     <span class="font-size-button" title="Decrease font size" (click)="decreaseFontSize.emit()">A -</span>
   </div>
+  <ng-container *ngIf="isLightTheme; else darkTheme">
+    <img class="theme-icon" src="assets/icons/moon.svg" alt="dark mode" title="Dark mode" (click)="setDarkTheme()">
+  </ng-container>
+  <ng-template #darkTheme>
+    <img class="theme-icon" src="assets/icons/sun.svg" alt="light mode" title="Light mode" (click)="setLightTheme()">
+  </ng-template>
 </div>

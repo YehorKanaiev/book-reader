@@ -36,7 +36,8 @@
         ],
         "@typescript-eslint/explicit-function-return-type": "error",
         "@typescript-eslint/no-explicit-any": "error",
-        "@ngrx/no-typed-global-store": "off"
+        "@ngrx/no-typed-global-store": "off",
+        "@ngrx/no-store-subscription": "off"
       }
     },
     {

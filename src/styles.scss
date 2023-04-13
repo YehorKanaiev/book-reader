@@ -142,5 +142,6 @@ html, body { height: 100%; }
 body { margin: 0; font-family: "Open Sans", sans-serif; color: $typography }
 
 body.theme-dark {
+  background-color: $background-dark-theme;
   color: $typography-light;
 }

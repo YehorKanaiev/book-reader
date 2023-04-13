@@ -1,10 +1,12 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer #drawer class="sidenav" mode="side">
-    <img src="assets/icons/back.svg" alt="back button" title="back" class="back-button" (click)="goToHome()">
+    <div title="back" class="back-button" (click)="goToHome()"></div>
+
     <ng-container *ngIf="bookMetadata$ | async as metadata">
       <h3 class="book-title">{{ metadata.title }}</h3>
       <h5 class="book-author">{{ metadata.author }}</h5>
     </ng-container>
+
     <ng-container *ngIf="chapters$ | async as chapters">
       <rd-sidenav-list  
               class="chapters" 
@@ -29,8 +31,10 @@
     
     <header class="book-controls-container">
       <rd-book-controls
+              [theme]="theme$ | async"
               (increaseFontSize)="increaseFontSize()"
-              (decreaseFontSize)="decreaseFontSize()">
+              (decreaseFontSize)="decreaseFontSize()"
+              (themeChanged)="changeTheme($event)">
       </rd-book-controls>
     </header>
     

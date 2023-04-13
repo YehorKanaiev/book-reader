@@ -29,6 +29,11 @@
     width: 3rem;
     padding: 1rem;
     cursor: pointer;
+    background-color: $primary;
+    -webkit-mask: url(../../assets/icons/upload.svg) no-repeat center;
+    mask: url(../../assets/icons/upload.svg) no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
   }
   
   .choose-file-btn {
@@ -64,6 +69,20 @@
     .sample-name:hover {
       cursor: pointer;
       text-decoration: underline;
+    }
+  }
+}
+
+.theme-dark :host {
+  .file-upload-area {
+    border-color: white;
+  
+    .upload-icon {
+      background-color: white;
+    }
+
+    &.file-over {
+      border-color: $border-gray;
     }
   }
 }
