@@ -33,6 +33,8 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
   private readonly bookSrc$ = new BehaviorSubject<string | ArrayBuffer | null>(null);
   readonly bookPlaceElementID = 'bookPlace';
   readonly pageButtonWidth = 80; //width in px
+  private readonly defaultScreenWidth = 1980; //px
+  private readonly defaultScreenHeight = 1010; //px
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -48,27 +50,8 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
     this.fontSize$ = this.store.select(selectFontSize);
     this.initFontSizeObserver();
     this.initThemeObserver();
-
-    //TODO create methods to handle state and queryParams
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation) {
-      const state = navigation.extras.state as { book?: ArrayBuffer };
-
-      if (state && state.book) {
-        this.bookSrc$.next(state.book);
-      }
-    }
-
-    this.activatedRoute.queryParams
-      .pipe(
-        tap(params => {
-          if (params['src']) {
-            this.bookSrc$.next(decodeURIComponent(params['src']));
-          }
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+    this.initQueryParamsObserver();
+    this.initRouterStateObserver();
   }
 
   ngAfterViewInit(): void {
@@ -137,9 +120,33 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
       .subscribe();
   }
 
+  private initQueryParamsObserver(): void {
+    this.activatedRoute.queryParams
+      .pipe(
+        tap(params => {
+          if (params['src']) {
+            this.bookSrc$.next(decodeURIComponent(params['src']));
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+  }
+
+  private initRouterStateObserver(): void {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation) {
+      const state = navigation.extras.state as { book?: ArrayBuffer };
+
+      if (state && state.book) {
+        this.bookSrc$.next(state.book);
+      }
+    }
+  }
+
   private renderBook(sourceURL: string | ArrayBuffer): void {
-    const width = (this.bookContainer?.nativeElement.offsetWidth ?? 1920) - 2 * this.pageButtonWidth;
-    const height = this.bookContainer?.nativeElement.offsetHeight ?? 1010;
+    const width = (this.bookContainer?.nativeElement.offsetWidth ?? this.defaultScreenWidth) - 2 * this.pageButtonWidth;
+    const height = this.bookContainer?.nativeElement.offsetHeight ?? this.defaultScreenHeight;
     const onChaptersInit = (chapters: Chapter[]): void => this.store.dispatch(setChapters({ chapters: chapters as Chapter[] }));
     const onChapterOpened = (chapter: Chapter): void => this.store.dispatch(setCurrentChapter({ chapter: chapter as Chapter }));
     const onMetadataInit = (metadata: BookMetadata): void => this.store.dispatch(setMetadata({ metadata }));
