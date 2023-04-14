@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '@state/app.state';
 import { decreaseFontSize, increaseFontSize, setChapters, setCurrentChapter, setMetadata } from '@state/book/book.actions';
 import { selectChapter, selectChapters, selectFontSize, selectMetadata } from '@state/book/book.selectors';
-import { debounceTime, Observable, ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { Chapter } from '../interfaces/chapter.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppRoutingPaths } from '@reader/app-routing-paths.enum';
@@ -30,7 +30,7 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('bookContainer') bookContainer?: ElementRef;
 
-  private readonly bookSrc$ = new ReplaySubject<string | ArrayBuffer>(1);
+  private readonly bookSrc$ = new BehaviorSubject<string | ArrayBuffer | null>(null);
   readonly bookPlaceElementID = 'bookPlace';
   readonly pageButtonWidth = 80; //width in px
   private readonly destroy$ = new Subject<void>();
@@ -72,13 +72,18 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (!this.bookSrc$) {
-      //TODO navigate to home;
+    if (!this.bookSrc$.value) {
+      console.error('There is no book to open');
+      this.router.navigate([AppRoutingPaths.Home]);
+
       return;
     }
 
-    //TODO without debounce time it doesnt work for the first time, but works when reloading
-    this.bookSrc$.pipe(debounceTime(0), takeUntil(this.destroy$)).subscribe(src => this.renderBook(src));
+    this.bookSrc$.pipe(takeUntil(this.destroy$)).subscribe(src => {
+      if (src) {
+        this.renderBook(src);
+      }
+    });
   }
 
   ngOnDestroy(): void {
