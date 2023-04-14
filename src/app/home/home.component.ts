@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  @ViewChild('fileUpload') fileUpload?: ElementRef<HTMLInputElement>;
+  @ViewChild('fileUpload') fileInput?: ElementRef<HTMLInputElement>;
 
   readonly allowedFileTypes = allowedFileTypes.map(type => type.type);
   readonly allowedTypesString = allowedFileTypes.map(type => type.type).join(', ');
@@ -24,11 +24,11 @@ export class HomeComponent {
   constructor(private readonly router: Router, private readonly snackbarService: MatSnackBar) {}
 
   onFileSelected(): void {
-    if (!this.fileUpload) {
+    if (!this.fileInput) {
       return;
     }
 
-    const file: File | null = this.fileUpload.nativeElement.files ? this.fileUpload.nativeElement.files[0] : null;
+    const file: File | null = this.fileInput.nativeElement.files ? this.fileInput.nativeElement.files[0] : null;
     if (!file) {
       return;
     }
@@ -56,7 +56,8 @@ export class HomeComponent {
   }
 
   openSample(sample: string): void {
-    this.router.navigate(this.readerPath, { queryParams: { src: encodeURIComponent(sample) } });
+    const encodedSampleURL = encodeURIComponent(sample);
+    this.router.navigate(this.readerPath, { queryParams: { src: encodedSampleURL } });
   }
 
   onFilesDropped(files: FileList): void {
@@ -76,15 +77,15 @@ export class HomeComponent {
   }
 
   private getAllowedFiles(files: FileList, types: string[]): File[] {
-    const allowed: File[] = [];
+    const allowedFiles: File[] = [];
     for (let i = 0; i < files.length; i++) {
       const type = files[i].type;
       if (types.includes(type)) {
-        allowed.push(files[i]);
+        allowedFiles.push(files[i]);
       }
     }
 
-    return allowed;
+    return allowedFiles;
   }
 
   private showSnackbar(message: string): void {

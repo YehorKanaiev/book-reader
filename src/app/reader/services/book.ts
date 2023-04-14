@@ -4,7 +4,7 @@ import { BookConfig } from '@reader/reader/interfaces/book-config.interface';
 
 export abstract class Book {
   /**
-   * Creates a book and adds it to an element in DOM
+   * Creates a book and adds it to a DOM element
    * @param config
    */
   abstract render(config: BookConfig): Promise<void>;
@@ -33,7 +33,7 @@ export abstract class Book {
   abstract openChapter(chapter: Chapter): Promise<void>;
 
   /**
-   * Set theme, so that book can adapt inner elements to application styles
+   * Set theme, so that book can adapt its inner elements to application styles
    * @param theme
    */
   abstract setTheme(theme: Theme): void;

@@ -55,18 +55,7 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (!this.bookSrc$.value) {
-      console.error('There is no book to open');
-      this.router.navigate([AppRoutingPaths.Home]);
-
-      return;
-    }
-
-    this.bookSrc$.pipe(takeUntil(this.destroy$)).subscribe(src => {
-      if (src) {
-        this.renderBook(src);
-      }
-    });
+    this.initBookSourceObserver();
   }
 
   ngOnDestroy(): void {
@@ -142,6 +131,21 @@ export class ReaderComponent implements AfterViewInit, OnDestroy {
         this.bookSrc$.next(state.book);
       }
     }
+  }
+
+  private initBookSourceObserver(): void {
+    if (!this.bookSrc$.value) {
+      console.error('There is no book to open');
+      this.router.navigate([AppRoutingPaths.Home]);
+
+      return;
+    }
+
+    this.bookSrc$.pipe(takeUntil(this.destroy$)).subscribe(src => {
+      if (src) {
+        this.renderBook(src);
+      }
+    });
   }
 
   private renderBook(sourceURL: string | ArrayBuffer): void {

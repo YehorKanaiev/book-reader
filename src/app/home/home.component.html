@@ -6,8 +6,9 @@
     <p>Allowed formats: {{ allowedTypesNames }}</p>
 
     <input type="file" class="file-input"
+           #fileUpload
            [accept]="allowedTypesString"
-           (change)="onFileSelected()" #fileUpload>
+           (change)="onFileSelected()">
   </div>
   
   <div class="samples">

@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Book } from '@reader/reader/services/book';
-import Epub, { Book as ParserBook } from 'epubjs';
+import Epub, { Book as EpubBook } from 'epubjs';
 import Rendition from 'epubjs/types/rendition';
 import { Subject } from 'rxjs';
 import { Chapter } from '../interfaces/chapter.interface';
@@ -11,7 +11,7 @@ import { BookMetadata } from '@reader/reader/interfaces/book-metadata.interface'
 
 @Injectable()
 export class EpubBookService extends Book implements OnDestroy {
-  private book?: ParserBook;
+  private book?: EpubBook;
   private rendition?: Rendition;
   private bookPlaceID?: string;
   private theme = Theme.Light;
